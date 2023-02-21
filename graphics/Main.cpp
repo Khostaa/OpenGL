@@ -2,12 +2,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+//vertex shader source code
 const char* vertexShaderSource = "#version 330 core\n"
-"layout (location = 0) in vec3 apos;\n"
+"layout (location = 0) in vec3 aPos;\n"
 "void main()\n"
 "{\n"
-"	gl_position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 "}\0";
+//Fragment Shader source code
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "void main()\n"
@@ -29,15 +31,6 @@ int main()
 	//CORE - contains all Modern functions
 	//Compatibility - contains modern as well as outdated functions
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	//vertice of a triangle
-	GLfloat vertices[] =
-	{
-		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		0.5, -0.5f * float(sqrt(3)) / 3, 0.0f,
-		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.f
-	};
-
 	// window specifications
 	// DataType of windows object in GLFW
 	// template : glfwCreateWindow(width,Height,"name",full_screen_or_not,not important)
@@ -63,40 +56,68 @@ int main()
 	glViewport(0, 0, 800, 800);
 
 	//GLuint is OpenGL Version of (unSigned) Positive interger 
-	// making a vertex Shader
+	// create a vertex Shader and its reference
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	//Attach Vertex Shader source to the Vertex Shader Object
 	glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+	//compile the Vertex Shader into machine code
 	glCompileShader(vertexShader);
 
-	//making a fragement shader
+	//Create Fragement shader and its reference
 	GLuint fragmentShader = glCreateShader(GL_VERTEX_SHADER);
+	//Attach Fragment Shader Source to the Fragment Shader Object
 	glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+	//Compile the Vertex Shader into machine code
 	glCompileShader(fragmentShader);
 
-	//wrap both vertex and fragment shader into one
+	//create Shader Program object and get its reference
 	GLuint shaderProgram = glCreateProgram();
+	//Attach Vertex and Fragment Shaders to Shader program
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
+	//Wrap-up/Link all the shaders together into the Shader Program
 	glLinkProgram(shaderProgram);
 
-	//deleting shaders we created previously as they are already in the program now
+	//deleting the now useless vertes and fragment shaders objects
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	//vetex array object, vertex buffer object where we'll store vertex wrapup
+	//vertices Coordinates
+	GLfloat vertices[] =
+	{
+		-0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower left corner
+		0.5f, -0.5f * float(sqrt(3)) / 3, 0.0f, // Lower right corner
+		0.0f, 0.5f * float(sqrt(3)) * 2 / 3, 0.0f, // Upper corner
+		-0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner left
+		0.5f / 2, 0.5f * float(sqrt(3)) / 6, 0.0f, // Inner right
+		0.0f, -0.5f * float(sqrt(3)) / 3, 0.0f // Inner down
+	};
+	
+	//Indices for vertices order
+	GLuint indices[] =
+	{
+		0,3,5, //Lower left triangle
+		3,2,4, //Lower right triangle
+		5,4,1 //Upper triangle
 
+	};
+
+	//Create reference containers for the Vertex Array Object and the vertex buffer object
 	// VAO must be defined prior to VBO
 
-	GLuint VAO, VBO;
-
+	GLuint VAO, VBO, EBO;
+	//GENERATE VAO, VBO and EBO with only 1 object each
 	glGenVertexArrays(1, &VAO);
-	//giving 1 as argument cause we'have only one object
 	glGenBuffers(1, &VBO);
-	//bind VAO and VBO
+	glGenBuffers(1, &EBO);
+
+	//Make the VAO the current Vertex Array Object by binding it
 	glBindVertexArray(VAO);
+
+	//bind the VBO specifying it's a GL_ARRAY_BUFFER
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-	/* to store our vetices in VBO
+	/* Introduce vetices into the VBO
 	  template for glBufferData
 
 	  glBufferData(type_of_buffer, size-of-data-in-bytes, vertices, GL_STREAM/GL_STATIC/GL_DYNAMIC)
@@ -107,42 +128,39 @@ int main()
 		_DRAW -VERTICES WILL BE MODIFIED AND USED TO DRAW ON SCREEN
 		_READ or _COPY */
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+	
+	//Bind the EBO specifying it's a Gl_Element_array_buffer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	//Introduce the indices into EBO
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+	
 	//timestampe 26:00 
+	//Configure the Vertex attribute so that openGl knows how to read the VBO
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	//Enable the vertex attribute so that OpenGl knows how to use it
 	glEnableVertexAttribArray(0);
 
 	//not mandatory but nice to have to ensure you don't accidentally change VAO or VBO
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
-
-
-
-
-	//telling openGL to prepare to clear the default color of the buffer and display the new/desired color
-	// first 3 are RBG format of color
-	//last one is alpha number which dictates transparency of color : 1-Opaque; 0-Transparent
-	glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
-
-	// tell openGL to execute the command we've told it to prepare for
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	//at this point we've BACK Buffer with our Desired color and Front Buffer with Default One
-	// so we swap the buffers to see our Color as only pixels of front buffer are seen
-	glfwSwapBuffers(window);
-
-
+	// Bind the EBO to 0 so that we don't accidentally modify it
+	// MAKE SURE TO UNBIND IT AFTER UNBINDING THE VAO, as the EBO is linked in the VAO
+	// This does not apply to the VBO because the VBO is already linked to the VAO during glVertexAttribPointer
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	// choose when to close the window
 	while (!glfwWindowShouldClose(window))
 	{
+		// specify the color of the background
 		glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
+		//clean the back buffer and assing the new color to it
 		glClear(GL_COLOR_BUFFER_BIT);
+		//tell OpenGL which shader program we want to use
 		glUseProgram(shaderProgram);
+		//bind the VAO so OpenGl knows to use it
 		glBindVertexArray(VAO);
-		//(what-to-draw, starting-vertex, no. of vertices)
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//(what-to-draw, no. of indices, datatypeofindices, index of indices)
+		glDrawElements(GL_TRIANGLES, 9, GL_UNSIGNED_INT, 0);
 		glfwSwapBuffers(window);
 		// telling glfw to process all the operations performed on window
 		glfwPollEvents();
@@ -151,6 +169,7 @@ int main()
 	//delete all created objects
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shaderProgram);
 	// deleted window after its work is done
 	glfwDestroyWindow(window);
