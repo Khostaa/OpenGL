@@ -71,19 +71,19 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>F:\OpenGL\External\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\OpenGL\External\include;F:\OpenGL\newGL\include;$(IncludePath)</IncludePath>
     <LibraryPath>F:\OpenGL\External\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IncludePath>F:\OpenGL\External\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\OpenGL\External\include;F:\OpenGL\newGL\include;$(IncludePath)</IncludePath>
     <LibraryPath>F:\OpenGL\External\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>F:\OpenGL\External\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\OpenGL\External\include;F:\OpenGL\newGL\include;$(IncludePath)</IncludePath>
     <LibraryPath>F:\OpenGL\External\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IncludePath>F:\OpenGL\External\include;$(IncludePath)</IncludePath>
+    <IncludePath>F:\OpenGL\External\include;F:\OpenGL\newGL\include;$(IncludePath)</IncludePath>
     <LibraryPath>F:\OpenGL\External\libs;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -152,10 +152,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="shader_s.h" />
+    <ClInclude Include="stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="3.3.shader.fs" />
     <None Include="3.3.shader.vs" />
+    <None Include="4.1.texture.fs" />
+    <None Include="4.1.texture.vs" />
+    <None Include="4.2.texture.fs" />
+    <None Include="4.2.texture.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
