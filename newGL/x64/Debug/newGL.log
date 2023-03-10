@@ -1,8 +1,2 @@
 ﻿  main.cpp
-F:\OpenGL\newGL\main.cpp(107,37): error C2653: 'FileSystem': is not a class or namespace name
-F:\OpenGL\newGL\main.cpp(107,57): warning C4129: 'O': unrecognized character escape sequence
-F:\OpenGL\newGL\main.cpp(107,57): warning C4129: 'c': unrecognized character escape sequence
-F:\OpenGL\newGL\main.cpp(107,49): error C3861: 'getPath': identifier not found
-F:\OpenGL\newGL\main.cpp(129,22): error C2653: 'FileSystem': is not a class or namespace name
-F:\OpenGL\newGL\main.cpp(129,42): warning C4129: 'O': unrecognized character escape sequence
-F:\OpenGL\newGL\main.cpp(129,34): error C3861: 'getPath': identifier not found
+F:\OpenGL\External\include\assimp\types.h(79,13): fatal  error C1083: Cannot open include file: '../contrib/utf8cpp/source/utf8.h': No such file or directory
